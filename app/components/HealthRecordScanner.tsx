@@ -176,7 +176,7 @@ export default function HealthRecordScanner({ parrotId }: { parrotId: number }) 
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
+        
         className="hidden"
         onChange={handleFileSelected}
       />
