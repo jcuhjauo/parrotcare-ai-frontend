@@ -92,7 +92,13 @@ export default function HealthRecordScanner({ parrotId }: { parrotId: number }) 
       formData.append('image', compressed, 'scan.jpg');
       formData.append('parrot_id', String(parrotId));
 
-      const res = await fetch('/api/records/scan', { method: 'POST', body: formData });
+     const res = await fetch('/api/records/scan', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+  },
+  body: formData,
+});
 
       if (!res.ok) {
         const body = await res.json().catch(() => null);
@@ -139,10 +145,13 @@ export default function HealthRecordScanner({ parrotId }: { parrotId: number }) 
 
     try {
       const res = await fetch('/api/records', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...draft, parrot_id: parrotId, image_path: imagePath, ai_confidence: draft.confidence }),
-      });
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+  },
+  body: JSON.stringify({ ...draft, parrot_id: parrotId, image_path: imagePath, ai_confidence: draft.confidence }),
+});
 
       if (!res.ok) throw new Error('儲存失敗，請稍後再試');
 

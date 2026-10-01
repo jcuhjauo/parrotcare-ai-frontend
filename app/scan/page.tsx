@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import HealthRecordScanner from '../components/HealthRecordScanner';
 
@@ -9,12 +10,23 @@ export default function ScanPage() {
           <p className="font-mono text-xs tracking-widest text-moss uppercase">
             牡丹鸚鵡照護 · 健康紀錄
           </p>
-          <Link
-            href="/records"
-            className="rounded-full border border-moss px-3 py-1 text-xs font-medium text-moss"
-          >
-            查詢紀錄
-          </Link>
+                    <div className="flex items-center gap-2">
+            <Link
+              href="/records"
+              className="rounded-full border border-moss px-3 py-1 text-xs font-medium text-moss"
+            >
+              查看紀錄
+            </Link>
+            <button
+              onClick={() => {
+                localStorage.removeItem('auth_token');
+                window.location.href = '/login';
+              }}
+              className="rounded-full border border-coral px-3 py-1 text-xs font-medium text-coral-dark"
+            >
+              登出
+            </button>
+          </div>
         </div>
         <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold leading-snug text-ink">
           把獸醫的紙本，

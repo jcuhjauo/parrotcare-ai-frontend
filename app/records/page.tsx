@@ -51,7 +51,10 @@ export default function RecordsPage() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   function loadRecords() {
-    fetch('/api/records', { cache: 'no-store' })
+    fetch('/api/records', {
+  cache: 'no-store',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+})
       .then((res) => {
         if (!res.ok) throw new Error('讀取失敗');
         return res.json();
@@ -95,7 +98,10 @@ export default function RecordsPage() {
     try {
       const res = await fetch(`/api/records/${editDraft.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
         body: JSON.stringify(editDraft),
       });
 
@@ -116,7 +122,10 @@ export default function RecordsPage() {
 
     setDeletingId(id);
     try {
-      const res = await fetch(`/api/records/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/records/${id}`, {
+  method: 'DELETE',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+});
       if (!res.ok) throw new Error('刪除失敗');
       loadRecords();
     } catch {
@@ -135,9 +144,20 @@ export default function RecordsPage() {
         <h1 className="mt-2 font-[family-name:var(--font-display)] text-3xl font-bold text-ink">
           就診紀錄
         </h1>
-        <Link href="/scan" className="mt-3 inline-block text-sm text-sky underline">
-          + 新增一筆掃描
-        </Link>
+                <div className="mt-3 flex items-center gap-4">
+          <Link href="/scan" className="text-sm text-sky underline">
+            + 新增一筆掃描
+          </Link>
+          <button
+            onClick={() => {
+              localStorage.removeItem('auth_token');
+              window.location.href = '/login';
+            }}
+            className="text-sm text-coral-dark underline"
+          >
+            登出
+          </button>
+        </div>
       </header>
 
       <div className="feather-edge bg-coral" />
@@ -217,7 +237,19 @@ export default function RecordsPage() {
                   />
                   <DetailRow label="下次複診" value={record.next_visit_date} />
                   <DetailRow label="備註" value={record.notes} />
+                              
 
+                  {record.line_items && record.line_items.length > 0 && (
+                    <div className="space-y-1 border-t border-sand pt-2">
+                      <p className="text-xs font-medium text-ink-soft">收費明細</p>
+                      {record.line_items.map((item, i) => (
+                        <div key={i} className="flex justify-between text-xs text-ink">
+                          <span>{item.item}</span>
+                          <span className="font-mono">${item.amount}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex gap-2 pt-2">
                     <button
                       onClick={() => startEdit(record)}
