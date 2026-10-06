@@ -31,7 +31,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="w-full max-w-xs space-y-4">
         
-          <a href="http://localhost:8000/auth/google"
+          <a href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-sand bg-white py-3 text-sm font-medium text-ink"
         >
           使用 Google 登入
